@@ -55,13 +55,36 @@ void drawAxes() {
 }
 
 void drawRobot() {
+	// Torso
+	glPushMatrix();
+	PaintWhite;
+	glRotatef(torsoAngleX, 1, 0, 0);
+	glPushMatrix();
+	glScalef(1.1f, 2, 0.6f);
+	glutWireCube(4);
+	glPopMatrix();
+
 	// Head
 	glPushMatrix();
 	PaintWhite;
-	glRotatef(90, 0, 1, 0);
+	// glRotatef(90, 0, 1, 0);
 	glRotatef(headAngle, 0, 1, 0);
 	glTranslatef(0, 6, 0);
 	glutWireSphere(1.9f, 8, 8);
+
+	// Eyes
+	glPushMatrix();
+	PaintWhite;
+
+	// Right Eye
+	glTranslatef(0.8f, 0.5f, 1.5f);  // Adjust position to be inside the head
+	glutWireSphere(0.4f, 8, 8);  // Draw right eye
+
+	// Left Eye
+	glTranslatef(-1.6f, 0.0f, 0.0f);  // Adjust position for left eye, maintaining the z-offset
+	glutWireSphere(0.4f, 8, 8);  // Draw left eye
+
+	glPopMatrix();  // Pop eyes matrix
 
 	glPushMatrix();
 	PaintWhite;
@@ -71,15 +94,6 @@ void drawRobot() {
 
 	glPopMatrix();
 	glPopMatrix();
-
-	// Torso
-    glPushMatrix();
-    PaintWhite;
-    glRotatef(torsoAngleX, 1, 0, 0);
-    glPushMatrix();
-    glScalef(1.1f, 2, 0.6f);
-    glutWireCube(4);
-    glPopMatrix();
 
     // Right arm
     glPushMatrix();
@@ -96,6 +110,14 @@ void drawRobot() {
     glRotatef(std::min(rightForearmAngle, 0.0f), 1, 0, 0);
     gluCylinder(solids, 0.6, 0.5, 2.5, 8, 8);
 
+	// Right hand (structure)
+	glPushMatrix();
+	PaintWhite;
+	glTranslatef(0, 0, 3);
+	glRotatef(std::min(rightForearmAngle, 0.0f), 1, 0, 0);
+	glutWireSphere(0.5, 8, 8);
+	glPopMatrix();
+
     // Right hand (gripper)
     glPushMatrix();
     PaintWhite;
@@ -103,19 +125,19 @@ void drawRobot() {
     glRotatef(-rightForearmAngle / 2, 1, 0, 0);
 
     glPushMatrix();
-    glTranslatef(0, 0.2, 0);  // Adjust position
-    glRotatef(90, 0, 0, 1);  // Adjust orientation
-    glRotatef(gripperAngle, 0, 1, 0);  // Apply gripper open/close angle
-    glScalef(0.1f, 0.8f, 1.0f);  // Flat shape
-    glutWireCube(1.0f);  // Gripper part
+    glTranslatef(0, 0.2, 0.8);
+    glRotatef(90, 0, 0, 1);
+    glRotatef(gripperAngle, 0, 1, 0);
+    glScalef(0.1f, 0.8f, 1.0f);
+    glutWireCube(1.0f);
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(0, -0.2, 0);  // Adjust position
-    glRotatef(90, 0, 0, 1);  // Adjust orientation
-    glRotatef(-gripperAngle, 0, 1, 0);  // Apply gripper open/close angle
-    glScalef(0.1f, 0.8f, 1.0f);  // Flat shape
-    glutWireCube(1.0f);  // Gripper part
+    glTranslatef(0, -0.2, 0.8);
+    glRotatef(90, 0, 0, 1);
+    glRotatef(-gripperAngle, 0, 1, 0);
+    glScalef(0.1f, 0.8f, 1.0f);
+    glutWireCube(1.0f);
     glPopMatrix();
 
 
@@ -138,6 +160,14 @@ void drawRobot() {
     glRotatef(std::min(leftForearmAngle, 0.0f), 1, 0, 0);
     gluCylinder(solids, 0.6, 0.5, 2.5, 8, 8);
 
+	// Left hand (structure)
+	glPushMatrix();
+	PaintWhite;
+	glTranslatef(0, 0, 3);
+	glRotatef(std::min(rightForearmAngle, 0.0f), 1, 0, 0);
+	glutWireSphere(0.5, 8, 8);
+	glPopMatrix();
+
     // Left hand (gripper)
     glPushMatrix();
     PaintWhite;
@@ -145,19 +175,19 @@ void drawRobot() {
     glRotatef(-leftForearmAngle / 2, 1, 0, 0);
 
     glPushMatrix();
-    glTranslatef(0, 0.2, 0);  // Adjust position
-    glRotatef(90, 0, 0, 1);  // Adjust orientation
-    glRotatef(gripperAngle, 0, 1, 0);  // Apply gripper open/close angle
-    glScalef(0.1f, 0.8f, 1.0f);  // Flat shape
-    glutWireCube(1.0f);  // Gripper part
+    glTranslatef(0, 0.2, 0.8);
+    glRotatef(90, 0, 0, 1);
+    glRotatef(gripperAngle, 0, 1, 0);
+    glScalef(0.1f, 0.8f, 1.0f);
+    glutWireCube(1.0f);
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(0, -0.2, 0);  // Adjust position
-    glRotatef(90, 0, 0, 1);  // Adjust orientation
-    glRotatef(-gripperAngle, 0, 1, 0);  // Apply gripper open/close angle
-    glScalef(0.1f, 0.8f, 1.0f);  // Flat shape
-    glutWireCube(1.0f);  // Gripper part
+    glTranslatef(0, -0.2, 0.8);
+    glRotatef(90, 0, 0, 1);
+    glRotatef(-gripperAngle, 0, 1, 0);
+    glScalef(0.1f, 0.8f, 1.0f);
+    glutWireCube(1.0f);
     glPopMatrix();
 
     glPopMatrix();
