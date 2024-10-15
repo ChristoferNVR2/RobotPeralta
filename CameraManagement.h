@@ -34,4 +34,10 @@ inline Camera cam3 = {
     0, 1, 0
 };
 
+inline Camera cam4 = {
+    40, 0, 0,
+    0, 0, 0,
+    0, 1, 0
+};
+
 inline Camera currentCam = cam1;

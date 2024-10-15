@@ -7,6 +7,9 @@
 
 GLUquadricObj *solids = gluNewQuadric();
 
+float headAngle = 0.0f;
+float headSpeed = 5.0f;
+
 float torsoAngleX = 0;
 
 float rightArmAngle = 0;
@@ -22,10 +25,10 @@ float leftCalfAngle = 0;
 float rightFootAngle = 0;
 float leftFootAngle = 0;
 
-// Control variables
-float torsoDirection = 1;
-int movingLeg = 1;
+float gripperAngle = 0.0f;
+float gripperSpeed = 5.0f;
 
+float torsoDirection = 1;
 
 void init() {
     glClearColor(0.7f, 0.7f, 0.7f, 0.0f);
@@ -52,21 +55,30 @@ void drawAxes() {
 }
 
 void drawRobot() {
-    // Torso
+	// Head
+	glPushMatrix();
+	PaintWhite;
+	glRotatef(90, 0, 1, 0);
+	glRotatef(headAngle, 0, 1, 0);
+	glTranslatef(0, 6, 0);
+	glutWireSphere(1.9f, 8, 8);
+
+	glPushMatrix();
+	PaintWhite;
+	glTranslatef(0, 2, 0);
+	glRotatef(90, 1, 0, 0);
+	glutWireTorus(0.4, 1.8, 8, 8);
+
+	glPopMatrix();
+	glPopMatrix();
+
+	// Torso
     glPushMatrix();
     PaintWhite;
     glRotatef(torsoAngleX, 1, 0, 0);
     glPushMatrix();
-    glScalef(1.1f, 2, 0.8);
+    glScalef(1.1f, 2, 0.6f);
     glutWireCube(4);
-    glPopMatrix();
-
-    // Head
-    glPushMatrix();
-    PaintWhite;
-    glRotatef(90, 0, 1, 0);
-    glTranslatef(0, 6, 0);
-    glutWireSphere(1.9f, 8, 8);
     glPopMatrix();
 
     // Right arm
@@ -81,15 +93,31 @@ void drawRobot() {
     glPushMatrix();
     PaintWhite;
     glTranslatef(0, 0, 3);
-    glRotatef(-rightForearmAngle, 1, 0, 0);
+    glRotatef(std::min(rightForearmAngle, 0.0f), 1, 0, 0);
     gluCylinder(solids, 0.6, 0.5, 2.5, 8, 8);
 
-    // Right hand
+    // Right hand (gripper)
     glPushMatrix();
     PaintWhite;
     glTranslatef(0, 0, 3);
     glRotatef(-rightForearmAngle / 2, 1, 0, 0);
-    glutWireSphere(0.7f, 8, 8);
+
+    glPushMatrix();
+    glTranslatef(0, 0.2, 0);  // Adjust position
+    glRotatef(90, 0, 0, 1);  // Adjust orientation
+    glRotatef(gripperAngle, 0, 1, 0);  // Apply gripper open/close angle
+    glScalef(0.1f, 0.8f, 1.0f);  // Flat shape
+    glutWireCube(1.0f);  // Gripper part
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0, -0.2, 0);  // Adjust position
+    glRotatef(90, 0, 0, 1);  // Adjust orientation
+    glRotatef(-gripperAngle, 0, 1, 0);  // Apply gripper open/close angle
+    glScalef(0.1f, 0.8f, 1.0f);  // Flat shape
+    glutWireCube(1.0f);  // Gripper part
+    glPopMatrix();
+
 
     glPopMatrix();
     glPopMatrix();
@@ -107,15 +135,33 @@ void drawRobot() {
     glPushMatrix();
     PaintWhite;
     glTranslatef(0, 0, 3);
-    glRotatef(-leftForearmAngle, 1, 0, 0);
-    gluCylinder(solids, 0.6, 0.45, 2.3, 8, 8);
+    glRotatef(std::min(leftForearmAngle, 0.0f), 1, 0, 0);
+    gluCylinder(solids, 0.6, 0.5, 2.5, 8, 8);
 
-    // Left hand
+    // Left hand (gripper)
     glPushMatrix();
     PaintWhite;
     glTranslatef(0, 0, 3);
     glRotatef(-leftForearmAngle / 2, 1, 0, 0);
-    glutWireSphere(0.7f, 8, 8);
+
+    glPushMatrix();
+    glTranslatef(0, 0.2, 0);  // Adjust position
+    glRotatef(90, 0, 0, 1);  // Adjust orientation
+    glRotatef(gripperAngle, 0, 1, 0);  // Apply gripper open/close angle
+    glScalef(0.1f, 0.8f, 1.0f);  // Flat shape
+    glutWireCube(1.0f);  // Gripper part
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0, -0.2, 0);  // Adjust position
+    glRotatef(90, 0, 0, 1);  // Adjust orientation
+    glRotatef(-gripperAngle, 0, 1, 0);  // Apply gripper open/close angle
+    glScalef(0.1f, 0.8f, 1.0f);  // Flat shape
+    glutWireCube(1.0f);  // Gripper part
+    glPopMatrix();
+
+    glPopMatrix();
+
 
     glPopMatrix();
     glPopMatrix();
@@ -126,22 +172,22 @@ void drawRobot() {
     PaintWhite;;
     glTranslatef(1.2f, -4, 0);
     glRotatef(90, 1, 0, 0);
-    glRotatef(rightLegAngle, 1, 0, 0);
+    glRotatef(leftLegAngle, 1, 0, 0);
     gluCylinder(solids, 1, 0.9, 4, 8, 8);
 
     // Right calf
     glPushMatrix();
     PaintWhite;
     glTranslatef(0, 0, 4);
-    glRotatef(-rightCalfAngle, 1, 0, 0);
+    glRotatef(-std::min(rightCalfAngle, 0.0f), 1, 0, 0);
     gluCylinder(solids, 0.9, 0.7, 3, 8, 8);
 
     // Right foot
     glPushMatrix();
     PaintWhite;
-    glTranslatef(0, 1, 3);
+    glTranslatef(0, 0.5, 2.7);
     glRotatef(rightFootAngle, 1, 0, 0);
-    glScalef(1.0f, 3.0f, 1.0f);
+    glScalef(1.0f, 2.5f, 1.0f);
     glutWireCube(1.0f);
 
     glPopMatrix();
@@ -160,15 +206,15 @@ void drawRobot() {
     glPushMatrix();
     PaintWhite;
     glTranslatef(0, 0, 4);
-    glRotatef(-leftCalfAngle, 1, 0, 0);
+    glRotatef(-std::min(leftLegAngle, 0.0f), 1, 0, 0);
     gluCylinder(solids, 0.9, 0.7, 3, 8, 8);
 
     // Left foot
     glPushMatrix();
     PaintWhite;
-    glTranslatef(0, 1, 3);
+    glTranslatef(0, 0.5, 2.7);
     glRotatef(leftFootAngle, 1, 0, 0);
-    glScalef(1.0f, 3.0f, 1.0f);
+    glScalef(1.0f, 2.5f, 1.0f);
     glutWireCube(1.0f);
 
     glPopMatrix();
@@ -189,6 +235,29 @@ void keyManagement(unsigned char key, int x, int y) {
         case '3':
             currentCam = cam3;
             break;
+	    case '4':
+            currentCam = cam4;
+            break;
+	    case 'o':  // Open gripper
+	        if (gripperAngle < 20.0f) {  // Limit max opening angle
+	            gripperAngle += gripperSpeed;
+	        }
+	    break;
+	    case 'c':  // Close gripper
+	        if (gripperAngle > -15.0f) {  // Limit minimum closing angle
+	            gripperAngle -= gripperSpeed;
+	        }
+	    break;
+		case 'a':  // Move head left
+			if (headAngle > -45.0f) {  // Limit head rotation
+				headAngle -= headSpeed;
+			}
+		break;
+		case 'd':  // Move head right
+			if (headAngle < 45.0f) {  // Limit head rotation
+				headAngle += headSpeed;
+			}
+		break;
         case 'q':
             exit(0);
         default: ;
@@ -225,38 +294,16 @@ void moveTorso(int i) {
 
 
     // Alternate movement of legs and arms
-    rightLegAngle = torsoAngleX * 8;
+    rightLegAngle = torsoAngleX * 4;
     rightCalfAngle = rightLegAngle / 2;
     leftLegAngle = -torsoAngleX * 4;
     leftCalfAngle = leftLegAngle / 2;
 
-    // // Right arm swings opposite to right leg
-    // rightArmAngle = -torsoAngleX * 6;
-    // if (rightArmAngle > 0) {
-    //     // Right arm is moving forward, less elbow bend
-    //     rightForearmAngle = rightArmAngle * 0.5f;
-    // } else {
-    //     // Right arm is moving backward, more elbow bend
-    //     rightForearmAngle = rightArmAngle * 0.75f;
-    // }
-    //
-    // // Left arm swings opposite to left leg
-    // leftArmAngle = torsoAngleX * 6;
-    // if (leftArmAngle > 0) {
-    //     // Left arm is moving forward, less elbow bend
-    //     leftForearmAngle = leftArmAngle * 0.5f;
-    // } else {
-    //     // Left arm is moving backward, more elbow bend
-    //     leftForearmAngle = leftArmAngle * 0.75f;
-    // }
-
-    // Arm movements (same logic as before, opposite to legs)
-    rightArmAngle = -rightLegAngle;  // Right arm opposite to right leg
+    rightArmAngle = -rightLegAngle;
     rightForearmAngle = rightArmAngle * 0.5f;
 
-    leftArmAngle = -leftLegAngle;  // Left arm opposite to left leg
+    leftArmAngle = -leftLegAngle;
     leftForearmAngle = leftArmAngle * 0.5f;
-
 
     glutPostRedisplay();
     glutTimerFunc(150, moveTorso, 0);  // Smoother movement
